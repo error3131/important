@@ -1,0 +1,116 @@
+Smith Chart
+clc;
+clear all;
+close all;
+RL=input('Enter RL= ');
+XL=input('Enter XL= ');
+Zo=input('Enter Zo= ');
+t1=(XL+(((((Zo-RL)^2)+(XL^2))*RL/Zo)^0.5))/(RL-Zo);
+t2=(XL-(((((Zo-RL)^2)+(XL^2))*RL/Zo)^0.5))/(RL-Zo);
+disp('t1=');
+disp(t1);
+disp('t2=');
+disp(t2);
+d1=atan(t2)/(2*pi);
+d2=(atan(t1)+pi)/(2*pi);
+disp('d1=');
+disp(d1);
+disp('d2=');
+disp(d2);
+B1=((RL*RL*t2)-((Zo-(XL*t2))*(XL+(Zo*t2))))/(Zo*(((RL*RL)+((XL+(Zo*t2))^2))));
+B2=((RL*RL*t1)-((Zo-(XL*t1))*(XL+(Zo*t1))))/(Zo*(((RL*RL)+((XL+(Zo*t1))^2))));
+disp('B1=');
+disp(B1);
+disp('B2=');
+disp(B2);
+l1=(atan(1/(B1*Zo)))/(2*pi);       %this is for short circuit stub, for open it is (-atan(B1*Zo))/(2*pi)
+l2=((atan(1/(B2*Zo)))/(2*pi))+0.5;     %((-atan(B2*Zo))/(2*pi))+0.5 for open
+disp('l1=');
+disp(l1);
+disp('l2=');
+disp(l2);
+
+
+
+
+
+
+
+
+Microstrip
+clc
+close all
+clear all
+W=[30 40 50];
+H=[1.6 3.2 4.8];
+Er=input('Enter value of Er: ');
+k=1;
+for i=1:3
+    for j=1:3
+        a(k)=W(i)/H(j);
+if a<=1
+    Eeff(k) =(Er+1)/2 + ((Er-1)/2)*(power(1+12*(H(j)/W(i)),-0.5)+0.04*power(1-(W(i)/H(j)),2));
+    Z0(k)=(60/(sqrt(Eeff(k))))*log(8*(H(j)/W(i))+0.25*(W(i)/H(j)));
+else
+    Eeff(k)=(Er+1)/2 + ((Er-1)/2)*(power(1+12*(H(j)/W(i)),-0.5));
+    Z0(k)=120*pi/(sqrt(Eeff(k))*((W(i)/H(j))+1.393+0.667*log((W(i)/H(j))+1.444)));
+end
+k=k+1;
+    end
+end
+figure(1)
+plot (a(1:3),Z0(1:3), a(3:6),Z0(3:6), a(6:9),Z0(6:9));
+
+Option 2 (Not sure if this is correct)
+clc;
+close all;
+clear all;
+Er = [4.3 2.3 1];
+h = [1.6 3.2 4.8];
+w = [20 30 40];
+for i = 1:3
+    Eeff = (Er(i)+1)/2 + ((Er(i)-1)/2)*(power(1+12*h(2)/w(2),-0.5));
+    Z0(i) = (120*3.14)/(sqrt(Eeff)*(w(2)/h(1)+1.393+0.667*log(w(2)/h(2)+1.444)));
+    c(i)=w(2)/h(1);
+end
+figure(1)
+subplot(2,2,1);
+plot(c,Z0);
+title('Characteristic ratio wrt W/H ratio with W=30mm & H=1.6mm')
+ylabel('Z0')
+xlabel('W/H')
+for i = 1:3
+    Eeff = (Er(3)+1)/2 + ((Er(3)-1)/2)*(power(1+12*h(i)/w(1),-0.5));
+    Z01(i) = (120*3.14)/(sqrt(Eeff)*(w(2)/h(i)+1.393+0.667*log(w(1)/h(i)+1.444)));
+    a(i)=w(1)/h(i);
+end
+subplot(2,2,2);
+plot(a,Z01);
+title('Characteristic ratio wrt W/H ratio with W=30 mm & Er=1')
+ylabel('Z0')
+xlabel('W/H')
+for i = 1:3
+    Eeff = (Er(3)+1)/2 + ((Er(3)-1)/2)*(power(1+12*h(1)/w(i),-0.5));
+    Z02(i) = (120*3.14)/(sqrt(Eeff)*(w(i)/h(1)+1.393+0.667*log(w(i)/h(1)+1.444)));
+    b(i)=w(i)/h(1);
+end
+subplot(2,2,3);
+plot(b,Z02);
+title('Characteristic ratio wrt W/H ratio with Er=1 & H=1.6 mm')
+ylabel('Z0')
+xlabel('W/H')
+w1=[10,20,30];
+h1=[40,50,60]
+for i = 1:3
+    Eeff = (Er(3)+1)/2 + ((Er(3)-1)/2)*((power(1+12*h1(i)/w1(1),-0.5))+(0.04*power((1-(w1(1)/h1(i))),2)));
+    Z03(i) = (60*log(((8*h1(i))/w1(1))+(w1(1)/(4*h1(i)))))/(sqrt(Eeff));
+    d(i)=w1(1)/h1(i);
+end
+subplot(2,2,4);
+plot(d,Z03);
+title('Characteristic ratio wrt W/H ratio with W=10mm & Er=1')
+ylabel('Z0')
+xlabel('W/H')
+
+
+
